@@ -1,4 +1,5 @@
 const env = require('dotenv')
+env.config({path: './configs/config.env'})
 const express = require('express')
 const morgan = require('morgan')
 const bootCamps = require('./routes/bootcamps')
@@ -6,13 +7,15 @@ const auth = require('./routes/auth')
 const courses = require('./routes/courses')
 const users = require('./routes/users')
 const reviews = require('./routes/reviews')
-env.config({path: './configs/config.env'})
 const connectDB = require('./configs/db')
+const errorHandler = require('./middleware/errorHandler')
 
 const app = express()
+app.use(express.json())
 
 //adding all routes
 app.use('/api/v1/bootcamps/', bootCamps)
+app.use(errorHandler)
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/courses', courses)
 app.use('/api/v1/users', users)
@@ -24,6 +27,7 @@ const mode = process.env.NODE_ENV;
 
 //connection to database
 connectDB()
+
 
 app.listen(port, () => {
     console.log(`server is running on port: ${port} in ${mode} mode`)
