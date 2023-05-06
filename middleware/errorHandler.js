@@ -2,7 +2,6 @@ const errorMessage = require('../utils/ErrorMessage')
 function errorHandler(error, req, res, next){
     console.log(error)
 
-
     //cast error on mongoose
     if(error.name === 'CastError'){
         error = new errorMessage(`requested resource with id: ${error.value} doesn't exists`, 404)
