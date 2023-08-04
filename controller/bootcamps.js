@@ -5,8 +5,26 @@ const geoCoder = require('../utils/geoCoder')
 const mongoose = require("mongoose");
 
 exports.getBootCamps = asyncHandler(async function (req, res, next) {
-    let bootCamps = await Bootcamp.find()
-    res.status(200).send({success: true,count: bootCamps.length, data: bootCamps})
+
+    // filtering, selecting and pagination
+    let query = {...req.query}
+    let reservedTokens = ['select', 'sort', 'page', 'limit']
+    let selected, sortedBy, page, limit
+    query.select ? selected = query.select.split(',').join(' ') : selected = undefined
+    query.sort ? sortedBy = query.sort : sortedBy = 'name'
+    query.page ? page = parseInt(query.page, 10) : page = 1
+    query.limit ? limit = parseInt(query.limit, 10) : limit = 10
+    let skipResource = (page-1) * limit
+
+
+    reservedTokens.forEach( token => {
+        delete query[token]
+    } )
+
+    let bootCamps = await Bootcamp.find(query).select(selected).sort(sortedBy).skip(skipResource).limit(limit)
+    let allResources = await Bootcamp.countDocuments()
+    let currentResources = bootCamps.length
+    res.status(200).send({success: true,allResources, currentResources, data: bootCamps})
 })
 
 exports.getBootcamp =  asyncHandler(async function (req, res, next) {
@@ -45,11 +63,22 @@ exports.newBootcamp = asyncHandler(async function (req, res, next){
 })
 
 exports.getBootCampsInRadius = asyncHandler(async function(req, res, next){
-    const {zipcode, range} = req.params
+    const {zipcode, range, unit} = req.params
     let location = await geoCoder.geocode(zipcode)
-    let radius = range / 6378 //km
-    console.log(radius)
     const {longitude, latitude} = location[0]
-    const bootCamps = await Bootcamp.find({location:{$geoWithin:{$centerSphere:[[longitude, latitude],[radius]]}}})
-    res.status(200).send({success: true, count: bootCamps.length, data: bootCamps})
+    let radius;
+    if( unit === 'km'){
+        radius = range / 6378 // km
+
+    }
+    else if(unit === 'mile'){
+        radius = range / 3963 // mile
+    }
+
+    const bootCamps = await Bootcamp.find({
+        location: {
+            $geoWithin: { $centerSphere: [ [longitude, latitude], radius ] }
+        }
+    })
+    res.status(200).send({success: true, count: bootCamps.length, unit ,data: bootCamps})
 })

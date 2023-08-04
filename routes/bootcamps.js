@@ -4,5 +4,5 @@ const router = express.Router();
 
 router.route('/').get(getBootCamps).post(newBootcamp)
 router.route('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp)
-router.route('/radius/:zipcode/:range').get(getBootCampsInRadius)
+router.route('/radius/:zipcode/:range/:unit').get(getBootCampsInRadius)
 module.exports = router
