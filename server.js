@@ -36,7 +36,6 @@ app.listen(port, () => {
 //logging information
 if(mode === 'development'){
     app.use(morgan('dev'))
-    console.log('yoo')
 }
 //home route
 app.get('/', (req, res) => {

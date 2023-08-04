@@ -1,6 +1,7 @@
 const env = require('dotenv')
 env.config({path: './configs/config.env'})
 const Bootcamp = require('../models/Bootcamp')
+const Course = require('../models/Course')
 const connectDB = require('../configs/db')
 const fs = require("fs");
 
@@ -9,11 +10,14 @@ const fs = require("fs");
 connectDB()
 
 const bootcamps = JSON.parse(fs.readFileSync(`${__dirname}/../_data/bootcamps.json`,'utf-8'))
+const courses = JSON.parse(fs.readFileSync(`${__dirname}/../_data/courses.json`,'utf-8'))
+
 
 async function createBootCamps(){
     try {
         await Bootcamp.create(bootcamps)
-        console.log('bootcamps added successfully'.blue.italic.inverse)
+        await Course.create(courses)
+        console.log('bootcamps and courses added successfully'.blue.italic.inverse)
         process.exit(0)
     }
     catch (error){
@@ -24,7 +28,8 @@ async function createBootCamps(){
 async function deleteBootCamps(){
     try {
         await Bootcamp.deleteMany();
-        console.log('deleted bootCamps from db'.red.italic.inverse)
+        await Course.deleteMany();
+        console.log('deleted bootCamps and courses from db'.red.italic.inverse)
         process.exit(0)
     }
     catch (error){

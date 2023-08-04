@@ -1,8 +1,8 @@
 const express = require('express')
-const router = express.Router()
+const {getCourses, getCourse, createCourse, updateCourse, deleteCourse} = require('../controller/courses')
+const router = express.Router({mergeParams : true})
 
-router.get('/', (req, res) => {
-    console.log('courses')
-})
+router.route('/').get(getCourses).post(createCourse)
+router.route('/:courseId').get(getCourse).put(updateCourse).delete(deleteCourse)
 
 module.exports = router
