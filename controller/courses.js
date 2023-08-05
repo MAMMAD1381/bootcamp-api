@@ -10,12 +10,13 @@ const mongoose = require("mongoose");
 */
 exports.getCourses = asyncHandler(async function (req, res, next) {
     let courses;
-    if(req.params.bootcampId)
+    if(req.params.bootcampId){
         courses = await Course.find({bootcamp: req.params.bootcampId})
-    else 
-        courses = await Course.find().populate({path: 'bootcamp', select: 'name description'})
-    let count = courses.length
-    res.status(200).send({success: true,count, data: courses})
+        res.status(200).send({success: true,count, data: courses})
+    }
+    else{
+        res.status(200).send(res.advancedQueriesResult)
+    }
 })
 
 
