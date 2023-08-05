@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify')
 const geoCoder = require('../utils/geoCoder')
+const Course =  require('./Course')
+require('colors')
+
 const BootcampSchema = new mongoose.Schema(
     {
         name: {
@@ -136,4 +139,13 @@ BootcampSchema.pre('save', async function (next) {
     this.address = undefined
     next()
 })
+
+BootcampSchema.pre('deleteOne', { document: true }, async function(next) {
+    console.log(`Courses being removed from bootcamp ${this._id}`.red);
+    await Course.deleteMany({ bootcamp: this._id });
+    next();
+  });
+
+
+BootcampSchema.virtual('courses', {ref: 'Course', localField: '_id', foreignField: 'bootcamp', justOne:false})
 module.exports = mongoose.model('Bootcamp', BootcampSchema)

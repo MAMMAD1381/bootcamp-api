@@ -21,7 +21,7 @@ exports.getBootCamps = asyncHandler(async function (req, res, next) {
         delete query[token]
     } )
 
-    let bootCamps = await Bootcamp.find(query).select(selected).sort(sortedBy).skip(skipResource).limit(limit)
+    let bootCamps = await Bootcamp.find(query).select(selected).sort(sortedBy).skip(skipResource).limit(limit).populate({path: 'courses', select: 'title description'})
     let allResources = await Bootcamp.countDocuments()
     let currentResources = bootCamps.length
     res.status(200).send({success: true,allResources, currentResources, data: bootCamps})
@@ -51,9 +51,10 @@ exports.updateBootcamp = asyncHandler(async function (req, res, next) {
 
 exports.deleteBootcamp = asyncHandler(async function (req, res, next) {
     let id = req.params.id;
-    let bootcamp = await Bootcamp.findByIdAndDelete(id)
+    let bootcamp = await Bootcamp.findById(id)
     if(bootcamp === null)
         return next(new errorMessage(`couldn't delete bootcamp with id ${id}`, 404))
+    bootcamp.deleteOne()
     res.status(200).send({success: true, data: {}})
 })
 

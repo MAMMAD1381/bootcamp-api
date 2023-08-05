@@ -13,7 +13,7 @@ exports.getCourses = asyncHandler(async function (req, res, next) {
     if(req.params.bootcampId)
         courses = await Course.find({bootcamp: req.params.bootcampId})
     else 
-        courses = await Course.find()
+        courses = await Course.find().populate({path: 'bootcamp', select: 'name description'})
     let count = courses.length
     res.status(200).send({success: true,count, data: courses})
 })
