@@ -9,9 +9,12 @@ const users = require('./routes/users')
 const reviews = require('./routes/reviews')
 const connectDB = require('./configs/db')
 const errorHandler = require('./middleware/errorHandler')
+const fileUpload = require('express-fileupload')
 
 const app = express()
 app.use(express.json())
+
+app.use(fileUpload())
 
 //adding all routes
 app.use('/api/v1/bootcamps/', bootCamps)
@@ -43,7 +46,8 @@ app.get('/', (req, res) => {
 })
 
 process.on('unhandledRejection', (error, promise) => {
-    console.log('error' + error.message)
-    server.close(() => process.exit(1))
+    console.error(error)
+    console.log('error ' + error.message)
+    // server.close(() => process.exit(1))
 })
 
