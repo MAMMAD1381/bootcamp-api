@@ -55,7 +55,16 @@ UserSchema.pre('save', async function(next){
 })
 
 // ? jwt sign
-UserSchema.methods.getJWT = (id) => jwt.sign({ id }, process.env.AUTH_SECRET, { expiresIn: process.env.AUTH_EXPIRE,});
+UserSchema.methods.getJWT = function () {
+    return jwt.sign({ id: this._id }, process.env.AUTH_SECRET, { expiresIn: process.env.AUTH_EXPIRE,});
+}
   
+// ? is password correct
+UserSchema.methods.isPassCorrect = async function (plainPass) {
+    console.log(`un hashed: ${plainPass}`.red, `${this.password}`.blue)
+    let r = await bcrypt.compare(plainPass+'', this.password)
+    console.log(`${r}`.red)
+    return await bcrypt.compare(plainPass+'', this.password)
+}
 
 module.exports = mongoose.model('User', UserSchema)
