@@ -1,4 +1,8 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+require('colors')
+require('dotenv')
+const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -43,3 +47,15 @@ const UserSchema = new mongoose.Schema({
         default: Date.now,
     },
 });
+
+// ? hashing pass before saving with bcrypt
+UserSchema.pre('save', async function(next){
+    let salt = process.env.AUTH_SALT_NUM ? parseInt(process.env.SALT_NUM) : 10
+    this.password = await bcrypt.hash(this.password, salt)
+})
+
+// ? jwt sign
+UserSchema.methods.getJWT = (id) => jwt.sign({ id }, process.env.AUTH_SECRET, { expiresIn: process.env.AUTH_EXPIRE,});
+  
+
+module.exports = mongoose.model('User', UserSchema)
