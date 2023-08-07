@@ -61,9 +61,6 @@ UserSchema.methods.getJWT = function () {
   
 // ? is password correct
 UserSchema.methods.isPassCorrect = async function (plainPass) {
-    console.log(`un hashed: ${plainPass}`.red, `${this.password}`.blue)
-    let r = await bcrypt.compare(plainPass+'', this.password)
-    console.log(`${r}`.red)
     return await bcrypt.compare(plainPass+'', this.password)
 }
 

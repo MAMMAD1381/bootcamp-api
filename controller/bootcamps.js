@@ -47,6 +47,7 @@ exports.deleteBootcamp = asyncHandler(async function (req, res, next) {
     res.status(200).send({success: true, data: {}})
 })
 
+// ? add a bootcamp
 exports.newBootcamp = asyncHandler(async function (req, res, next){
     const bootcamp = await Bootcamp.create(req.body)
     res.status(201).send({success: true, data: bootcamp})

@@ -10,11 +10,15 @@ const reviews = require('./routes/reviews')
 const connectDB = require('./configs/db')
 const errorHandler = require('./middleware/errorHandler')
 const fileUpload = require('express-fileupload')
+const cookieParser = require('cookie-parser')
 
 const app = express()
 app.use(express.json())
 
 app.use(fileUpload())
+
+// ? cookie parser
+app.use(cookieParser())
 
 //adding all routes
 app.use('/api/v1/bootcamps/', bootCamps)
@@ -24,6 +28,7 @@ app.use('/api/v1/courses', courses)
 app.use('/api/v1/users', users)
 app.use('/api/v1/reviews', reviews)
 app.use(morgan('dev'))
+
 
 const port = process.env.PORT
 const mode = process.env.NODE_ENV;
