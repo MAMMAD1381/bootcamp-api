@@ -2,9 +2,6 @@ const Bootcamp = require('../models/Bootcamp')
 const errorMessage = require('../utils/ErrorMessage')
 const asyncHandler = require('../middleware/async')
 const geoCoder = require('../utils/geoCoder')
-const mongoose = require("mongoose");
-const fileUpload = require('express-fileupload')
-const advancedQueries = require('../middleware/advancedQueries')
 require('dotenv')
 
 
@@ -49,6 +46,7 @@ exports.deleteBootcamp = asyncHandler(async function (req, res, next) {
 
 // ? add a bootcamp
 exports.newBootcamp = asyncHandler(async function (req, res, next){
+    req.body.user = req.user.id
     const bootcamp = await Bootcamp.create(req.body)
     res.status(201).send({success: true, data: bootcamp})
 })
@@ -82,6 +80,7 @@ exports.uploadPhoto = asyncHandler(async function(req, res, next){
     let ext = photoFile.name.split('.')
     photoFile.ext = ext[ext.length-1]
     photoFile.name = `${id}.${photoFile.ext}`
+    let bootcamp
 
     // ? vallidation for size and type
     if (!photoFile.mimetype.startsWith('image')){
@@ -94,7 +93,7 @@ exports.uploadPhoto = asyncHandler(async function(req, res, next){
         if(err){
             return next(new errorMessage('there was an issue with saving file', 500))
         }
-        let bootcamp = await Bootcamp.findByIdAndUpdate(id, {photo: photoFile.name})
+        bootcamp = await Bootcamp.findByIdAndUpdate(id, {photo: photoFile.name})
     })
-    res.send({success: 'true'})
+    res.status(201).send({success: 'true', data:{bootcamp}})
 })

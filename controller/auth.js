@@ -43,7 +43,7 @@ exports.login = asyncHandler(async function(req, res, next){
 
 // ? get me
 exports.getMe = asyncHandler(async function(req, res ,next){
-    let user = await User.findById(req.id)
+    let user = await User.findById(req.user.id)
     res.status(200).json({success: true, data: user})
 })
 

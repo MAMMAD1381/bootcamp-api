@@ -1,8 +1,7 @@
+const errorMessage = require('../utils/ErrorMessage')
 const Course = require('../models/Course')
 const Bootcamp = require('../models/Bootcamp')
-const errorMessage = require('../utils/ErrorMessage')
 const asyncHandler = require('../middleware/async')
-const mongoose = require("mongoose");
 
 /* 
    ? get all courses
@@ -22,17 +21,18 @@ exports.getCourses = asyncHandler(async function (req, res, next) {
 
 // ? get a single course with courseId
 exports.getCourse = asyncHandler(async function (req, res, next) {
-    let course = await Course.findById(req.params.courseId)
+    let course = await Course.findById(req.params.id)
     res.status(200).send({success: true, data: course})
 })
 
-// ? post a course with bootcampId
+// ? create a course with bootcampId
 exports.createCourse = asyncHandler(async function (req, res, next) {
     let course
     let bootcampId = req.params.bootcampId
     let bootcamp = await Bootcamp.findById(bootcampId)
     if(bootcamp){
         req.body.bootcamp = bootcampId
+        req.body.user = req.user.id
         course = await Course.create(req.body)
     }
     else{
@@ -47,13 +47,13 @@ exports.updateCourse = asyncHandler(async function (req, res, next) {
         new: true,
         runValidators: true
     });
-    res.status(200).json({success: true, data: course})
+    res.status(200).send({success: true, data: course})
 })
 
 
 // ? delete a course with courseId
 exports.deleteCourse = asyncHandler(async function (req, res, next) {
-    let course = await Course.findByIdAndDelete(req.params.courseId)
+    let course = await Course.findByIdAndDelete(req.params.id)
     if(course === null)
         return next(new errorMessage(`couldn't delete course with id ${req.params.courseId}`, 404))
     res.status(200).json({success: true, data: course})
