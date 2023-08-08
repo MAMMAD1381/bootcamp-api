@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 require('colors')
 require('dotenv')
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -50,6 +51,7 @@ const UserSchema = new mongoose.Schema({
 
 // ? hashing pass before saving with bcrypt
 UserSchema.pre('save', async function(next){
+    if(!this.isModified('password')) next()
     let salt = process.env.AUTH_SALT_NUM ? parseInt(process.env.SALT_NUM) : 10
     this.password = await bcrypt.hash(this.password, salt)
 })
@@ -64,4 +66,15 @@ UserSchema.methods.isPassCorrect = async function (plainPass) {
     return await bcrypt.compare(plainPass+'', this.password)
 }
 
+
+// ? forgotPass token generator
+UserSchema.methods.generateResetPasswordToken = function (){
+    let resetToken = crypto.randomBytes(10).toString('hex')
+    console.log(`${resetToken}`.red)
+    this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex')+''
+    this.resetPasswordExpire = new Date(Date.now() + 10*60*1000)
+    console.log(this.resetPasswordExpire)
+    
+    return resetToken
+}
 module.exports = mongoose.model('User', UserSchema)
