@@ -4,6 +4,7 @@ require('colors')
 require('dotenv')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto');
+const Bootcamp = require('../models/Bootcamp')
 const errorMessage = require('../utils/ErrorMessage');
 
 const UserSchema = new mongoose.Schema({
@@ -76,5 +77,12 @@ UserSchema.methods.generateResetPasswordToken = function (){
     
     return resetToken
 }
+
+// ? deleting bootcamp associated to user
+UserSchema.pre('deleteOne', { document: true }, async function(next) {
+    console.log(`deleting users bootcamp with id: ${this._id}`.red);
+    await Bootcamp.deleteMany({ user: this._id });
+    next();
+});
 
 module.exports = mongoose.model('User', UserSchema)

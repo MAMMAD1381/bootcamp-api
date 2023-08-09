@@ -144,7 +144,7 @@ BootcampSchema.pre('deleteOne', { document: true }, async function(next) {
     console.log(`Courses being removed from bootcamp ${this._id}`.red);
     await Course.deleteMany({ bootcamp: this._id });
     next();
-  });
+});
 
 
 BootcampSchema.virtual('courses', {ref: 'Course', localField: '_id', foreignField: 'bootcamp', justOne:false})
