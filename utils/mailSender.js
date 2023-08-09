@@ -15,6 +15,7 @@ const mailSender = async function (options) {
     to: options.toMail, // list of receivers
     subject: options.subject, // Subject line
     text: options.message, // plain text body
+    html: options.html
   };
   console.log(transporter, message)
 

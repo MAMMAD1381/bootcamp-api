@@ -3,7 +3,8 @@ const bcrypt = require('bcryptjs');
 require('colors')
 require('dotenv')
 const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
+const crypto = require('crypto');
+const errorMessage = require('../utils/ErrorMessage');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -70,11 +71,10 @@ UserSchema.methods.isPassCorrect = async function (plainPass) {
 // ? forgotPass token generator
 UserSchema.methods.generateResetPasswordToken = function (){
     let resetToken = crypto.randomBytes(10).toString('hex')
-    console.log(`${resetToken}`.red)
     this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex')+''
     this.resetPasswordExpire = new Date(Date.now() + 10*60*1000)
-    console.log(this.resetPasswordExpire)
     
     return resetToken
 }
+
 module.exports = mongoose.model('User', UserSchema)
