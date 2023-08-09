@@ -81,7 +81,9 @@ UserSchema.methods.generateResetPasswordToken = function (){
 // ? deleting bootcamp associated to user
 UserSchema.pre('deleteOne', { document: true }, async function(next) {
     console.log(`deleting users bootcamp with id: ${this._id}`.red);
-    await Bootcamp.deleteMany({ user: this._id });
+    let bootcamps = await Bootcamp.find({ user: this._id })
+    // await Bootcamp.deleteMany({ user: this._id });
+    bootcamps.forEach( async (bootcamp) => await bootcamp.deleteOne()) 
     next();
 });
 
