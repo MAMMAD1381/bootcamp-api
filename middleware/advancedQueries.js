@@ -20,7 +20,7 @@ const advancedQueries = (model, populate) => async (req, res, next) => {
     // console.log('hello', results)
     let allResources = await model.countDocuments()
     let currentResources = results.length
-    res.advancedQueriesResult = {success: true,allResources, currentResources, data: results}
+    res.advancedQueriesResult = {success: true, allResources, currentResources, currentPage:page, data: results}
     next()
   };
   

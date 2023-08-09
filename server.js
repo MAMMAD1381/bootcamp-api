@@ -28,6 +28,7 @@ app.use('/api/v1/courses', courses);
 app.use('/api/v1/users', users);
 app.use('/api/v1/reviews', reviews);
 app.use('/api/v1/me', me);
+
 app.use(errorHandler);
 
 app.use(morgan('dev'));
