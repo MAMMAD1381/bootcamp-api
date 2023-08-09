@@ -17,7 +17,6 @@ const mailSender = async function (options) {
     text: options.message, // plain text body
     html: options.html
   };
-  console.log(transporter, message)
 
   const info = await transporter.sendMail(message);
 
