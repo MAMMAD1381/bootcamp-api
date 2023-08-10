@@ -9,9 +9,10 @@ const asyncHandler = require('../middleware/async')
 */
 exports.getCourses = asyncHandler(async function (req, res, next) {
     let courses;
-    if(req.params.bootcampId){
-        courses = await Course.find({bootcamp: req.params.bootcampId})
-        res.status(200).send({success: true,count, data: courses})
+    console.log(req.params)
+    if(req.params.id){
+        courses = await Course.find({bootcamp: req.params.id})
+        res.status(200).send({success: true,count: courses.length, data: courses})
     }
     else{
         res.status(200).send(res.advancedQueriesResult)

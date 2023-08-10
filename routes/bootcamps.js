@@ -5,6 +5,7 @@ const Bootcamp = require('../models/Bootcamp')
 const advancedQueries = require('../middleware/advancedQueries')
 const router = express.Router();
 const courses = require('./courses')
+const reviews = require('./reviews')
 
 
 router.route('/').get(advancedQueries(Bootcamp, {path: 'courses', select: 'title description'}), getBootCamps)
@@ -17,5 +18,6 @@ router.route('/:id').get(getBootcamp)
 router.route('/radius/:zipcode/:range/:unit').get(getBootCampsInRadius)
 
 router.route('/:id/photo').put(authorization, roleAuthorization(['admin', 'publisher']), ownershipAuthorization(Bootcamp), uploadPhoto)
-router.use('/:bootcampId/courses', courses)
+router.use('/:id/courses', courses)
+router.use('/:id/reviews', reviews)
 module.exports = router
