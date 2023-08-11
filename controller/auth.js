@@ -38,6 +38,16 @@ exports.login = asyncHandler(async function (req, res, next) {
     next();
 });
 
+exports.logOut = asyncHandler(async function (req, res, next) {
+    res.status(200)
+        .cookie('TOKEN', '', {
+            maxAge: 1000,
+            httpOnly: true,
+        })
+        .send({ success: true, data: {} });
+    next();
+});
+
 // ? get me
 exports.getMe = asyncHandler(async function (req, res, next) {
     let user = await User.findById(req.user.id);
@@ -48,9 +58,7 @@ exports.getMe = asyncHandler(async function (req, res, next) {
 exports.tokenSender = asyncHandler(async function (req, res, next) {
     let token = res.user.getJWT();
     let cookieOptions = {
-        expire: new Date(
-            Date.now + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-        ),
+        maxAge: Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
         httpOnly: true,
     };
     res.status(200)
