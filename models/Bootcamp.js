@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const slugify = require('slugify')
 const geoCoder = require('../utils/geoCoder')
 const Course =  require('./Course')
+const Review = require('./Review')
 require('colors')
 
 const BootcampSchema = new mongoose.Schema(
@@ -115,13 +116,13 @@ const BootcampSchema = new mongoose.Schema(
     }
 );
 
-//adding slug
+// ? adding slug
 BootcampSchema.pre('save', function (next){
     this.slug = slugify(this.name, {lower: true})
     next()
 })
 
-//geocoder
+// ? geocoder
 BootcampSchema.pre('save', async function (next) {
     let location = await geoCoder.geocode(this.address)
     this.location = {
@@ -143,15 +144,12 @@ BootcampSchema.pre('save', async function (next) {
 BootcampSchema.pre('deleteOne', { document: true }, async function(next) {
     console.log(`Courses being removed from bootcamp ${this._id}`.red);
     await Course.deleteMany({ bootcamp: this._id });
+    await Review.deleteMany({bootcamp: this._id})
     next();
 });
-
-BootcampSchema.pre('deleteMany', { document: true }, async function(next) {
-    console.log(`Courses being removed from bootcamp delete Many ${this._id}`.red);
-    await Course.deleteMany({ bootcamp: this._id });
-    next();
-});
-
 
 BootcampSchema.virtual('courses', {ref: 'Course', localField: '_id', foreignField: 'bootcamp', justOne:false})
+
+BootcampSchema.virtual('reviews', {ref: 'Review', localField: '_id', foreignField: 'bootcamp', justOne:false})
+
 module.exports = mongoose.model('Bootcamp', BootcampSchema)

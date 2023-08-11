@@ -8,7 +8,7 @@ const courses = require('./courses')
 const reviews = require('./reviews')
 
 
-router.route('/').get(advancedQueries(Bootcamp, {path: 'courses', select: 'title description'}), getBootCamps)
+router.route('/').get(advancedQueries(Bootcamp, {path: 'courses reviews', select: 'title text description'}), getBootCamps)
                  .post(authorization, roleAuthorization(['admin', 'publisher']), oneResourcePerUser(Bootcamp), newBootcamp)
 
 router.route('/:id').get(getBootcamp)

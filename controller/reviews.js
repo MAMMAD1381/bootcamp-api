@@ -58,5 +58,12 @@ exports.updateReview = asyncHandler(async function (req, res, next) {
 
 // ? delete a review (owner and admin)
 exports.deleteReview = asyncHandler(async function (req, res, next) {
-    res.status(200).send({ success: true, data: 'review deleted' });
+    if (!req.params.id)
+        return next(new errorMessage('review id is required', 400));
+
+    let review = await Review.findById(req.params.id)
+    if(!review) return next(new errorMessage('review not found', 404));
+
+    review = await review.deleteOne()
+    res.status(200).send({ success: true, data: {} });
 });

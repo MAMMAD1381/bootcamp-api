@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Bootcamp = require('./Bootcamp')
 
 const ReviewSchema = new mongoose.Schema({
     title: {
@@ -32,5 +33,21 @@ const ReviewSchema = new mongoose.Schema({
         required: true
     }
 });
+
+ReviewSchema.post('save', {document: true}, async function(next){
+    const Bootcamp = require('./Bootcamp')
+    const Review = require('./Review')
+    let bootcamp = await Bootcamp.findById(this.bootcamp)
+    let reviews = await Review.find({bootcamp: bootcamp._id})
+    console.log(this._id)
+
+    let sum = 0, averageRating
+
+    reviews.forEach(review => {
+        sum = sum + parseInt(review.rating)
+    });
+    averageRating = sum/(reviews.length)
+    await bootcamp.updateOne({averageRating}, {runValidators: false, new: true})
+})
 
 module.exports = mongoose.model('Review', ReviewSchema)
