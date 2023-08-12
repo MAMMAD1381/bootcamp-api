@@ -5,7 +5,6 @@ require('dotenv')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto');
 const Bootcamp = require('../models/Bootcamp')
-const errorMessage = require('../utils/ErrorMessage');
 
 const UserSchema = new mongoose.Schema({
     name: {

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Bootcamp = require('./Bootcamp')
 
 const ReviewSchema = new mongoose.Schema({
     title: {

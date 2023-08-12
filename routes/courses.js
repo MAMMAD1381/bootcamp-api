@@ -18,7 +18,7 @@ const router = express.Router({ mergeParams: true });
 router
     .route('/')
     .get(
-        advancedQueries(Course, {
+        advancedQueries(Course, undefined, {
             path: 'bootcamp',
             select: 'name description',
         }),

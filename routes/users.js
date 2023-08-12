@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User')
+const User = require('../models/User');
 const {
     getAllUsers,
     getUser,
@@ -12,12 +12,16 @@ const {
     authorization,
     roleAuthorization,
 } = require('../middleware/authorization');
-const advancedQueries = require('../middleware/advancedQueries')
-
+const advancedQueries = require('../middleware/advancedQueries');
 
 router
     .route('/')
-    .get(authorization, advancedQueries(User), roleAuthorization(['admin']), getAllUsers)
+    .get(
+        authorization,
+        advancedQueries(User),
+        roleAuthorization(['admin']),
+        getAllUsers
+    )
     .post(authorization, roleAuthorization(['admin']), createUser);
 
 router

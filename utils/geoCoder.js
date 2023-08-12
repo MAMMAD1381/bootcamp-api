@@ -1,12 +1,12 @@
-const NodeGeoCoder = require('node-geocoder')
+const NodeGeoCoder = require('node-geocoder');
 
 const options = {
     provider: process.env.GEO_CODER_PROVIDER,
     httpAdapter: 'https',
     apiKey: process.env.GEO_CODER_API_KEY,
-    formatter: null
-}
+    formatter: null,
+};
 
-const geoCoder = NodeGeoCoder(options)
+const geoCoder = NodeGeoCoder(options);
 
-module.exports = geoCoder
+module.exports = geoCoder;

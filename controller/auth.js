@@ -3,8 +3,6 @@ const errorMessage = require('../utils/ErrorMessage');
 const asyncHandler = require('../middleware/async');
 require('dotenv');
 const mailSender = require('../utils/mailSender');
-const bcrypt = require('bcryptjs');
-const { options } = require('../routes/courses');
 const crypto = require('crypto');
 
 exports.register = asyncHandler(async function (req, res, next) {
@@ -85,18 +83,17 @@ exports.forgotPassword = asyncHandler(async function (req, res, next) {
         subject: 'reset password', // Subject line
         message: `if you have not requested a password reset ignore this email otherwise send a post request to this url: ${url}`, // plain text body
         html: `<form method="post" action="some_page" class="inline">
-        <center style="width: 100%; background-color: #0d0cb5; padding: 10px;">
-            <div style="background-color: #0d0cb5; padding: 10px; color: #f1f1f1; font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 15px; line-height: 1.8;">
-            <h2 style="color: #f1f1f1;">Password Reset Request</h2>
-            <p> if you have not requested a reset Password ignore this email, otherwise pls click on the link below for password reset.</p>
-            </div>
-            <button style="height: 50px; background-color: #0d0cb5; display: inline-block; border-radius: 5px; border: 1px solid #fff;" type="submit" name="submit_param" value="submit_value" class="link-button">
-                <p><a style="text-decoration: none; padding: 5px 15px; display: inline-block; border-radius: 5px; background: transparent; color: #fff;" href="${url}"> reset password </a> </p>
-        
-            </button>
-        </center>    
-    </form>
-    `,
+            <center style="width: 100%; background-color: #0d0cb5; padding: 10px;">
+                <div style="background-color: #0d0cb5; padding: 10px; color: #f1f1f1; font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 15px; line-height: 1.8;">
+                <h2 style="color: #f1f1f1;">Password Reset Request</h2>
+                <p> if you have not requested a reset Password ignore this email, otherwise pls click on the link below for password reset.</p>
+                </div>
+                <button style="height: 50px; background-color: #0d0cb5; display: inline-block; border-radius: 5px; border: 1px solid #fff;" type="submit" name="submit_param" value="submit_value" class="link-button">
+                    <p><a style="text-decoration: none; padding: 5px 15px; display: inline-block; border-radius: 5px; background: transparent; color: #fff;" href="${url}"> reset password </a> </p>
+            
+                </button>
+            </center>    
+        </form>`,
     });
     res.status(200).send({ success: true, data: 'reset password link sent' });
     next();

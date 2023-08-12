@@ -23,7 +23,7 @@ exports.updateDetails = asyncHandler(async function (req, res, next) {
         { runValidators: true, new: true }
     );
 
-    res.status(200).send({ success: true, data: user }); // todo resources updated http code
+    res.status(200).send({ success: true, data: user });
 });
 
 // ? update password (for loggeed in users only)
@@ -47,5 +47,5 @@ exports.updatePassword = asyncHandler(async function (req, res, next) {
 
     user = await user.save()
 
-    res.status(200).send({ success: true, data: user }); // todo resources updated http code
+    res.status(200).send({ success: true, data: user });
 });

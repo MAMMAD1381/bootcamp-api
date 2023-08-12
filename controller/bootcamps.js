@@ -3,10 +3,21 @@ const errorMessage = require('../utils/ErrorMessage')
 const asyncHandler = require('../middleware/async')
 const geoCoder = require('../utils/geoCoder')
 require('dotenv')
+const fs = require('fs')
 
 
 // ? get all bootcamps
 exports.getBootCamps = asyncHandler(async function (req, res, next) {
+    fs.readdir(`${__dirname}/../public/uploads/photos/`, function (err, files) {
+        if (err) {
+          console.error("Could not list the directory.", err);
+          process.exit(1);
+        }
+      
+        files.forEach(function (file, index) {
+            console.log(typeof file)
+        });
+      });
     res.status(200).send(res.advancedQueriesResult)
 })
 
@@ -54,16 +65,22 @@ exports.newBootcamp = asyncHandler(async function (req, res, next){
 // ? get bootcamps in a certain radius
 exports.getBootCampsInRadius = asyncHandler(async function(req, res, next){
     const {zipcode, range, unit} = req.params
+    if(!zipcode || !range) return next(new errorMessage(`pls enter the zipcode and range (unit is optional km or mile)`, 400))
     let location = await geoCoder.geocode(zipcode)
     const {longitude, latitude} = location[0]
-    let radius;
-    if( unit === 'km'){
-        radius = range / 6378 // km
 
-    }
-    else if(unit === 'mile'){
-        radius = range / 3963 // mile
-    }
+    // ? default unit is km
+    const kmUnit = 6378, mileUnit = 3963
+    let radius = (unit === 'km') ? range/kmUnit : (unit === 'mile') ? range/mileUnit : range/kmUnit
+
+    // let radius;
+    // if( unit === 'km'){
+    //     radius = range / 6378 // km
+
+    // }
+    // else if(unit === 'mile'){
+    //     radius = range / 3963 // mile
+    // }
 
     const bootCamps = await Bootcamp.find({
         location: {
@@ -76,6 +93,7 @@ exports.getBootCampsInRadius = asyncHandler(async function(req, res, next){
 // ? upload photo
 exports.uploadPhoto = asyncHandler(async function(req, res, next){
     let id = req.params.id
+    if(!req.files.file) return next(new errorMessage('pls send the image file too(the key name should be file)', 400))
     let photoFile = {...req.files.file}
     let ext = photoFile.name.split('.')
     photoFile.ext = ext[ext.length-1]
